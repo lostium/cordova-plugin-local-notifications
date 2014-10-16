@@ -66,7 +66,7 @@
 
         BOOL isEnabled = true;
         // None of the code should even be compiled unless the Base SDK is iOS 8.0 or later
-#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 80000
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
         UIApplication *application = [UIApplication sharedApplication];
         UIUserNotificationSettings *settings = [application currentUserNotificationSettings];
 
@@ -74,12 +74,6 @@
             isEnabled = false;
             if ([UIApplication instancesRespondToSelector : @selector(registerUserNotificationSettings :)]) {
                 [application registerUserNotificationSettings : [UIUserNotificationSettings settingsForTypes : UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound categories : nil]];
-            } else {
-                BOOL canOpenSettings = (&UIApplicationOpenSettingsURLString != NULL);
-                if (canOpenSettings) {
-                    NSURL *url = [NSURL URLWithString : UIApplicationOpenSettingsURLString];
-                    [application openURL : url];
-                }
             }
         }
 #else
