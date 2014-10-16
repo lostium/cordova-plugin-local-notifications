@@ -1,6 +1,6 @@
 /*
  Copyright 2013-2014 appPlant UG
-
+ 
  Licensed to the Apache Software Foundation (ASF) under one
  or more contributor license agreements.  See the NOTICE file
  distributed with this work for additional information
@@ -8,9 +8,9 @@
  to you under the Apache License, Version 2.0 (the
  "License"); you may not use this file except in compliance
  with the License.  You may obtain a copy of the License at
-
+ 
  http://www.apache.org/licenses/LICENSE-2.0
-
+ 
  Unless required by applicable law or agreed to in writing,
  software distributed under the License is distributed on an
  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -56,6 +56,62 @@
 }
 
 /**
+ * Check if local notifications are enabled
+ *
+ * @param {NSMutableDictionary} properties
+*      
+ */
+-(void) isEnabled : (CDVInvokedUrlCommand*) command {
+    [self.commandDelegate runInBackground : ^{
+
+        BOOL isEnabled = true;
+        // None of the code should even be compiled unless the Base SDK is iOS 8.0 or later
+#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 80000
+        UIApplication *application = [UIApplication sharedApplication];
+        UIUserNotificationSettings *settings = [application currentUserNotificationSettings];
+
+        if (!settings.types) {
+            isEnabled = false;
+            if ([UIApplication instancesRespondToSelector : @selector(registerUserNotificationSettings :)]) {
+                [application registerUserNotificationSettings : [UIUserNotificationSettings settingsForTypes : UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound categories : nil]];
+            } else {
+                BOOL canOpenSettings = (&UIApplicationOpenSettingsURLString != NULL);
+                if (canOpenSettings) {
+                    NSURL *url = [NSURL URLWithString : UIApplicationOpenSettingsURLString];
+                    [application openURL : url];
+                }
+            }
+        }
+#else
+
+#endif
+
+        CDVPluginResult* result;
+
+        result = [CDVPluginResult resultWithStatus : CDVCommandStatus_OK
+        messageAsBool : isEnabled];
+
+        [self.commandDelegate sendPluginResult : result
+        callbackId : command.callbackId];
+    }
+    ];
+}
+/**
+ * Open app config
+ *
+ * @param {NSMutableDictionary} properties
+ * 
+ */
+-(void) openConfig : (CDVInvokedUrlCommand*) command {
+    BOOL canOpenSettings = (&UIApplicationOpenSettingsURLString != NULL);
+    if (canOpenSettings) {
+        NSURL *url = [NSURL URLWithString : UIApplicationOpenSettingsURLString];
+        [[UIApplication sharedApplication] openURL : url];
+    }
+    [self execCallback : command];
+}
+
+/**
  * Schedules a new local notification.
  *
  * @param {NSMutableDictionary} properties
@@ -75,7 +131,7 @@
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.3 * NSEC_PER_SEC),
                            dispatch_get_main_queue(), ^{
                                [self cancelNotification:notification fireEvent:NO];
-                           });
+            });
         }
 
         [self scheduleNotificationWithProperties:properties];
@@ -118,7 +174,7 @@
         }
 
         [[UIApplication sharedApplication]
-         cancelAllLocalNotifications];
+        cancelAllLocalNotifications];
 
         [[UIApplication sharedApplication]
          setApplicationIconBadgeNumber:0];
@@ -149,7 +205,7 @@
         [self.commandDelegate sendPluginResult:result
                                     callbackId:command.callbackId];
     }];
-}
+    }
 
 /**
  * Retrieves a list of ids from all currently pending notifications.
@@ -249,7 +305,7 @@
 - (void) scheduleNotificationWithProperties:(NSMutableDictionary*)properties
 {
     UILocalNotification* notification = [self notificationWithProperties:
-                                         properties];
+            properties];
 
     NSDictionary* userInfo = notification.userInfo;
     NSString* id = [userInfo objectForKey:@"id"];
@@ -398,6 +454,15 @@
  */
 - (void) didFinishLaunchingWithOptions:(NSNotification*)notification
 {
+       // None of the code should even be compiled unless the Base SDK is iOS 8.0 or later
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
+    UIApplication *application = [UIApplication sharedApplication];
+    // The following line must only run under iOS 8. This runtime check prevents
+    // it from running if it doesn't exist (such as running under iOS 7 or earlier).
+    if ([application respondsToSelector : @selector(registerUserNotificationSettings :)]) {
+        [application registerUserNotificationSettings : [UIUserNotificationSettings settingsForTypes : UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound categories : nil]];
+    }
+#endif
     NSDictionary* launchOptions = [notification userInfo];
 
     UILocalNotification* localNotification = [launchOptions objectForKey:

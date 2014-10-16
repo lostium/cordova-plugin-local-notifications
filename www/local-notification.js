@@ -270,7 +270,41 @@ LocalNotification.prototype = {
 
         cordova.exec(callbackFn, null, 'LocalNotification', 'isTriggered', [id]);
     },
+    
+    /**
+     *  
+     * @param {Function} callback
+     * @param {Object} scope
+     *      The scope for the callback function
+     *
+     * @return {bool}
+     *     
+     */
+    isEnabled: function (callback, scope) {
+        var callbackFn = this.createCallbackFn(callback, scope);
 
+       
+        cordova.exec(callbackFn, null, 'LocalNotification', 'isEnabled', []);
+
+        return;
+    },
+    /**
+     *
+     * @param {Function} callback
+     * @param {Object} scope
+     *      The scope for the callback function
+     *
+     * @return {bool}
+     *
+     */
+    openConfig: function (callback, scope) {
+        var callbackFn = this.createCallbackFn(callback, scope);
+
+
+        cordova.exec(callbackFn, null, 'LocalNotification', 'openConfig', []);
+
+        return;
+    },
     /**
      * Occurs when a notification was added.
      *
