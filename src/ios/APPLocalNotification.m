@@ -66,20 +66,17 @@
 
         BOOL isEnabled = true;
         // None of the code should even be compiled unless the Base SDK is iOS 8.0 or later
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
-        UIApplication *application = [UIApplication sharedApplication];
-        UIUserNotificationSettings *settings = [application currentUserNotificationSettings];
 
-        if (!settings.types) {
+        UIApplication *application = [UIApplication sharedApplication];
+        if ([UIApplication instancesRespondToSelector:@selector(registerUserNotificationSettings:)]){
+           UIUserNotificationSettings *settings = [application currentUserNotificationSettings];
+           if (!settings.types) {
             isEnabled = false;
             if ([UIApplication instancesRespondToSelector : @selector(registerUserNotificationSettings :)]) {
                 [application registerUserNotificationSettings : [UIUserNotificationSettings settingsForTypes : UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound categories : nil]];
             }
+           }
         }
-#else
-
-#endif
-
         CDVPluginResult* result;
 
         result = [CDVPluginResult resultWithStatus : CDVCommandStatus_OK
