@@ -38,4 +38,6 @@
 - (void) getScheduledIds:(CDVInvokedUrlCommand*)command;
 // Check if notifications are enabled
 - (void) isEnabled:(CDVInvokedUrlCommand*)command;
+
+- (void) openConfig : (CDVInvokedUrlCommand*) command;
 @end
