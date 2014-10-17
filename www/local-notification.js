@@ -1,33 +1,33 @@
 /*
-    Copyright 2013-2014 appPlant UG
-
-    Licensed to the Apache Software Foundation (ASF) under one
-    or more contributor license agreements.  See the NOTICE file
-    distributed with this work for additional information
-    regarding copyright ownership.  The ASF licenses this file
-    to you under the Apache License, Version 2.0 (the
-    "License"); you may not use this file except in compliance
-    with the License.  You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing,
-    software distributed under the License is distributed on an
-    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-    KIND, either express or implied.  See the License for the
-    specific language governing permissions and limitations
-    under the License.
-*/
+ Copyright 2013-2014 appPlant UG
+ 
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+ 
+ http://www.apache.org/licenses/LICENSE-2.0
+ 
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+ */
 
 var LocalNotification = function () {
     this._defaults = {
-        message:    '',
-        title:      '',
+        message: '',
+        title: '',
         autoCancel: false,
-        badge:      0,
-        id:         '0',
-        json:       '',
-        repeat:     ''
+        badge: 0,
+        id: '0',
+        json: '',
+        repeat: ''
     };
 };
 
@@ -40,7 +40,6 @@ LocalNotification.prototype = {
     getDefaults: function () {
         return this._defaults;
     },
-
     /**
      * Overwrite default settings
      *
@@ -55,7 +54,6 @@ LocalNotification.prototype = {
             }
         }
     },
-
     /**
      * @private
      *
@@ -78,7 +76,6 @@ LocalNotification.prototype = {
 
         return options;
     },
-
     /**
      * @private
      *
@@ -91,23 +88,25 @@ LocalNotification.prototype = {
         var defaults = this._defaults;
 
         switch (device.platform) {
-        case 'Android':
-            defaults.icon       = 'icon';
-            defaults.smallIcon  = null;
-            defaults.ongoing    = false;
-            defaults.led        = 'FFFFFF'; /*RRGGBB*/
-            defaults.sound      = 'TYPE_NOTIFICATION'; break;
-        case 'iOS':
-            defaults.sound      = ''; break;
-        case 'WinCE': case 'Win32NT':
-            defaults.smallImage = null;
-            defaults.image      = null;
-            defaults.wideImage  = null;
+            case 'Android':
+                defaults.icon = 'icon';
+                defaults.smallIcon = null;
+                defaults.ongoing = false;
+                defaults.led = 'FFFFFF'; /*RRGGBB*/
+                defaults.sound = 'TYPE_NOTIFICATION';
+                break;
+            case 'iOS':
+                defaults.sound = '';
+                break;
+            case 'WinCE':
+            case 'Win32NT':
+                defaults.smallImage = null;
+                defaults.image = null;
+                defaults.wideImage = null;
         }
 
         return defaults;
     },
-
     /**
      * @private
      *
@@ -129,7 +128,6 @@ LocalNotification.prototype = {
             callbackFn.apply(scope || this, arguments);
         };
     },
-
     /**
      * Add a new entry to the registry
      *
@@ -144,8 +142,8 @@ LocalNotification.prototype = {
      *      The notification's ID
      */
     add: function (options, callback, scope) {
-        var options    = this.mergeWithDefaults(options),
-            callbackFn = this.createCallbackFn(callback, scope);
+        var options = this.mergeWithDefaults(options),
+                callbackFn = this.createCallbackFn(callback, scope);
 
         if (options.id) {
             options.id = options.id.toString();
@@ -164,7 +162,7 @@ LocalNotification.prototype = {
         }
 
         if (typeof options.date == 'object') {
-            options.date = Math.round(options.date.getTime()/1000);
+            options.date = Math.round(options.date.getTime() / 1000);
         }
 
         if (['WinCE', 'Win32NT'].indexOf(device.platform) > -1) {
@@ -177,7 +175,6 @@ LocalNotification.prototype = {
 
         return options.id;
     },
-
     /**
      * Cancels the specified notification.
      *
@@ -189,12 +186,11 @@ LocalNotification.prototype = {
      *      The scope for the callback function
      */
     cancel: function (id, callback, scope) {
-        var id         = id.toString(),
-            callbackFn = this.createCallbackFn(callback, scope);
+        var id = id.toString(),
+                callbackFn = this.createCallbackFn(callback, scope);
 
         cordova.exec(callbackFn, null, 'LocalNotification', 'cancel', [id]);
     },
-
     /**
      * Removes all previously registered notifications.
      *
@@ -208,7 +204,6 @@ LocalNotification.prototype = {
 
         cordova.exec(callbackFn, null, 'LocalNotification', 'cancelAll', []);
     },
-
     /**
      * Retrieves a list with all currently pending notifications.
      *
@@ -222,7 +217,6 @@ LocalNotification.prototype = {
 
         cordova.exec(callbackFn, null, 'LocalNotification', 'getScheduledIds', []);
     },
-
     /**
      * Checks wether a notification with an ID is scheduled.
      *
@@ -234,12 +228,11 @@ LocalNotification.prototype = {
      *      The scope for the callback function
      */
     isScheduled: function (id, callback, scope) {
-        var id         = id.toString(),
-            callbackFn = this.createCallbackFn(callback, scope);
+        var id = id.toString(),
+                callbackFn = this.createCallbackFn(callback, scope);
 
         cordova.exec(callbackFn, null, 'LocalNotification', 'isScheduled', [id]);
     },
-
     /**
      * Retrieves a list with all triggered notifications.
      *
@@ -253,7 +246,6 @@ LocalNotification.prototype = {
 
         cordova.exec(callbackFn, null, 'LocalNotification', 'getTriggeredIds', []);
     },
-
     /**
      * Checks wether a notification with an ID was triggered.
      *
@@ -265,12 +257,11 @@ LocalNotification.prototype = {
      *      The scope for the callback function
      */
     isTriggered: function (id, callback, scope) {
-        var id         = id.toString(),
-            callbackFn = this.createCallbackFn(callback, scope);
+        var id = id.toString(),
+                callbackFn = this.createCallbackFn(callback, scope);
 
         cordova.exec(callbackFn, null, 'LocalNotification', 'isTriggered', [id]);
     },
-    
     /**
      *  
      * @param {Function} callback
@@ -281,10 +272,14 @@ LocalNotification.prototype = {
      *     
      */
     isEnabled: function (callback, scope) {
-        var callbackFn = this.createCallbackFn(callback, scope);
-
-       
-        cordova.exec(callbackFn, null, 'LocalNotification', 'isEnabled', []);
+        var instance = this;
+        
+        if (device.name === 'Android') {
+            callback.apply(instance, true);
+        } else {
+            var callbackFn = this.createCallbackFn(callback, scope);
+            cordova.exec(callbackFn, null, 'LocalNotification', 'isEnabled', []);
+        }
 
         return;
     },
@@ -315,8 +310,8 @@ LocalNotification.prototype = {
      * @param {String} json
      *      A custom (JSON) string
      */
-    onadd: function (id, state, json) {},
-
+    onadd: function (id, state, json) {
+    },
     /**
      * Occurs when the notification is triggered.
      *
@@ -327,8 +322,8 @@ LocalNotification.prototype = {
      * @param {String} json
      *      A custom (JSON) string
      */
-    ontrigger: function (id, state, json) {},
-
+    ontrigger: function (id, state, json) {
+    },
     /**
      * Fires after the notification was clicked.
      *
@@ -339,8 +334,8 @@ LocalNotification.prototype = {
      * @param {String} json
      *      A custom (JSON) string
      */
-    onclick: function (id, state, json) {},
-
+    onclick: function (id, state, json) {
+    },
     /**
      * Fires if the notification was canceled.
      *
@@ -351,29 +346,30 @@ LocalNotification.prototype = {
      * @param {String} json
      *      A custom (JSON) string
      */
-    oncancel: function (id, state, json) {}
+    oncancel: function (id, state, json) {
+    }
 };
 
-var plugin  = new LocalNotification(),
-    channel = require('cordova/channel');
+var plugin = new LocalNotification(),
+        channel = require('cordova/channel');
 
 // Called after all 'deviceready' listener are called
-channel.deviceready.subscribe( function () {
+channel.deviceready.subscribe(function () {
     // Device is ready now, the listeners are registered and all queued events
     // can be executed now.
     cordova.exec(null, null, 'LocalNotification', 'deviceready', []);
 });
 
-channel.onCordovaReady.subscribe( function () {
+channel.onCordovaReady.subscribe(function () {
     // The cordova device plugin is ready now
-    channel.onCordovaInfoReady.subscribe( function () {
+    channel.onCordovaInfoReady.subscribe(function () {
         if (device.platform == 'Android') {
-            channel.onPause.subscribe( function () {
+            channel.onPause.subscribe(function () {
                 // Necessary to set the state to `background`
                 cordova.exec(null, null, 'LocalNotification', 'pause', []);
             });
 
-            channel.onResume.subscribe( function () {
+            channel.onResume.subscribe(function () {
                 // Necessary to set the state to `foreground`
                 cordova.exec(null, null, 'LocalNotification', 'resume', []);
             });
