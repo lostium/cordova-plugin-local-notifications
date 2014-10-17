@@ -272,9 +272,8 @@ LocalNotification.prototype = {
      *     
      */
     isEnabled: function (callback, scope) {
-        var instance = this;
-        
-        if (device.platform === 'Android') {
+        var instance = this;        
+        if (device.platform === 'Android' || device.platform === 'WinCE' ||  device.platform === 'Win32NT' ) {
             callback.apply(instance, [true]);
         } else {
             var callbackFn = this.createCallbackFn(callback, scope);
