@@ -275,7 +275,7 @@ LocalNotification.prototype = {
         var instance = this;
         
         if (device.name === 'Android') {
-            callback.apply(instance, true);
+            callback.apply(instance, [true]);
         } else {
             var callbackFn = this.createCallbackFn(callback, scope);
             cordova.exec(callbackFn, null, 'LocalNotification', 'isEnabled', []);
