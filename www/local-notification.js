@@ -274,7 +274,7 @@ LocalNotification.prototype = {
     isEnabled: function (callback, scope) {
         var instance = this;
         
-        if (device.name === 'Android') {
+        if (device.platform === 'Android') {
             callback.apply(instance, [true]);
         } else {
             var callbackFn = this.createCallbackFn(callback, scope);
